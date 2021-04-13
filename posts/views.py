@@ -13,3 +13,10 @@ class PostListCreateView(APIView):
   def get(self, request):
     serializer = PostSerializer(self.queryset.all(), many=True)
     return Response(serializer.data)
+
+  def post(self, request):
+    title = request.data.get("title")
+    contents = request.data.get("contents")
+    if not title: return Response(status=400)
+    create_post(title, contents)
+    return Response({"success": True})
