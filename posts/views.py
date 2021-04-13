@@ -13,3 +13,12 @@ def index(request):
   } for post in posts]
 
   return JsonResponse(data, safe=False)
+
+def detail(request, pk=None):
+  post = get_posts(id=pk)
+  if (len(post) == 0): return JsonResponse({}, status=404)
+  if (len(post) != 1): return JsonResponse({}, status=400)
+  return JsonResponse({
+    "title": post.title,
+    "contents": post.contents,
+  })
