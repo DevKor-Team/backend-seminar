@@ -1,10 +1,10 @@
 from django.shortcuts import render
 from django.http.response import JsonResponse
 
-from posts.services import get_posts, create_post
+from posts.services import all_posts, get_post, create_post
 
 def index(request):
-  posts = get_posts()
+  posts = all_posts()
 
   data = [{
     "id": post.id,
@@ -15,9 +15,9 @@ def index(request):
   return JsonResponse(data, safe=False)
 
 def detail(request, pk=None):
-  post = get_posts(id=pk)
-  if (len(post) == 0): return JsonResponse({}, status=404)
-  if (len(post) != 1): return JsonResponse({}, status=400)
+  post = get_post(id=pk)
+  if post is None: return JsonResponse({}, status=404)
+
   return JsonResponse({
     "title": post.title,
     "contents": post.contents,
@@ -30,4 +30,3 @@ def create(request):
     if not title: return JsonResponse({}, status=400)
     create_post(title, contents)
     return JsonResponse({"success": True})
-    

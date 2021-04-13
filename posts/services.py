@@ -1,6 +1,6 @@
 from posts.models import Post
 
-def get_posts(**kwargs):
+def all_posts(**kwargs):
   """
   Get Post objects.
 
@@ -8,6 +8,12 @@ def get_posts(**kwargs):
   :return: list of Post (queryset)
   """
   return Post.objects.filter(**kwargs).all()
+
+def get_post(id):
+  try:
+    return Post.objects.get(id=id)
+  except Post.DoesNotExist:
+    return None
 
 def create_post(title, contents):
   post = Post(title=title, contents=contents)
