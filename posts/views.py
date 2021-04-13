@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http.response import JsonResponse
+from django.http import QueryDict
 
 from posts.services import all_posts, get_post, create_post, update_post, delete_post
 
@@ -16,7 +17,6 @@ def index(request):
 def detail(request, pk=None):
   post = get_post(id=pk)
   if post is None: return JsonResponse({}, status=404)
-
   return JsonResponse({
     "title": post.title,
     "contents": post.contents,
@@ -31,16 +31,22 @@ def create(request):
     return JsonResponse({"success": True})
 
 def update(request, pk=None):
-  if request.method == "UPDATE":
     post = update_post(
       id=pk,
-      title=request.POST.get("title"),
-      contents=request.POST.get("contents")
+      title=QueryDict(request.body).get("title"),
+      contents=QueryDict(request.body).get("contents")
     )
     if post is None: return JsonResponse({}, status=404)
     return JsonResponse({"success": True})
 
 def delete(request, pk=None):
-  if request.method == "DELETE":
     success = delete_post(pk)
     return JsonResponse({"success": success})
+
+def post(request, pk=None):
+  if request.method == "GET":
+    return detail(request, pk)
+  if request.method == "PATCH":
+    return update(request, pk)
+  if request.method == "DELETE":
+    return delete(request, pk)
