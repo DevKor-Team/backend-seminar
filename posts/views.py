@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http.response import JsonResponse
 
-from posts.services import get_posts
+from posts.services import get_posts, create_post
 
 def index(request):
   posts = get_posts()
@@ -22,3 +22,12 @@ def detail(request, pk=None):
     "title": post.title,
     "contents": post.contents,
   })
+
+def create(request):
+  if request.method == "POST":
+    title = request.POST.get("title")
+    contents = request.POST.get("contents")
+    if not title: return JsonResponse({}, status=400)
+    create_post(title, contents)
+    return JsonResponse({"success": True})
+    
