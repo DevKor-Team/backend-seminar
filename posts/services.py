@@ -19,3 +19,11 @@ def create_post(title, contents):
   post = Post(title=title, contents=contents)
   post.save()
   return post
+
+def update_post(id, title=None, contents=None):
+  post = get_post(id)
+  if post is None: return None
+  post.title = title if title is not None else post.title
+  post.contents = contents if contents is not None else post.contents
+  post.save()
+  return post
