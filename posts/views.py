@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http.response import JsonResponse
 
-from posts.services import all_posts, get_post, create_post, update_post
+from posts.services import all_posts, get_post, create_post, update_post, delete_post
 
 def index(request):
   posts = all_posts()
@@ -39,3 +39,8 @@ def update(request, pk=None):
     )
     if post is None: return JsonResponse({}, status=404)
     return JsonResponse({"success": True})
+
+def delete(request, pk=None):
+  if request.method == "DELETE":
+    success = delete_post(pk)
+    return JsonResponse({"success": success})

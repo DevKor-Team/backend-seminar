@@ -27,3 +27,9 @@ def update_post(id, title=None, contents=None):
   post.contents = contents if contents is not None else post.contents
   post.save()
   return post
+
+def delete_post(id):
+  post = get_post(id)
+  if post is None: return False
+  post.delete()
+  return True
