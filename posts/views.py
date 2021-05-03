@@ -1,12 +1,16 @@
 from rest_framework import decorators, status, mixins
-from rest_framework.viewsets import GenericViewSet
+from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from rest_framework.response import Response
 from django.http import Http404
 
+from posts.filters import PostFilter
+from posts.paginations import PostPagination
 from posts.serializer import PostSerializer
 from posts.services import all_posts, get_post, create_post, update_post, delete_post
 
 class PostViewSet(GenericViewSet):
+    filterset_class = PostFilter
+    pagination_class = PostPagination
     authentication_classes = []
     permission_classes = []
 
@@ -15,8 +19,14 @@ class PostViewSet(GenericViewSet):
     queryset = all_posts()
 
     def list(self, request, *args, **kwargs):
-        serializer = self.get_serializer(self.get_queryset(), many=True)
-        return Response(serializer.data)
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
 
     def create(self, request, *args, **kwargs):
         title = request.data.get("title")
@@ -44,12 +54,14 @@ class PostViewSet(GenericViewSet):
         post.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @decorators.action(methods=["GET", "POST"], detail=True)
+    @decorators.action(methods=["GET"], detail=True)
     def like(self, request, pk=None, *args, **kwargs):
         post = self.get_object()
-        if request.method == "GET":
-            return Response({"like": post.likes})
-        elif request.method == "POST":
-            post.likes += 1
-            post.save()
+        return Response({"like": post.likes})
+
+    @like.mapping.post
+    def post_like(self, request, pk=None):
+        post = self.get_object()
+        post.likes += 1
+        post.save()
         return Response({"like": post.likes})
