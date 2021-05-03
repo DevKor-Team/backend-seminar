@@ -47,3 +47,13 @@ class PostViewSet(ViewSet):
     post = self.get_object(pk)
     post.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
+
+  @decorators.action(methods=["GET", "POST"], detail=True)
+  def like(self, request, pk=None, *args, **kwargs):
+    post = self.get_object(pk)
+    if request.method == "GET":
+      return Response({"like": post.likes})
+    elif request.method == "POST":
+      post.likes += 1
+      post.save()
+      return Response({"like": post.likes})

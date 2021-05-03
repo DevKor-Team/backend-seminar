@@ -4,3 +4,4 @@ class Post(models.Model):
   id = models.AutoField(primary_key=True)
   title = models.CharField(max_length=128)
   contents = models.TextField()
+  likes = models.IntegerField(default=0)
