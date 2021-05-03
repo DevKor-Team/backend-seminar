@@ -22,7 +22,8 @@ def create_post(title, contents):
 
 def update_post(id, title=None, contents=None):
     post = get_post(id)
-    if post is None: return None
+    if post is None:
+        return None
     post.title = title if title is not None else post.title
     post.contents = contents if contents is not None else post.contents
     post.save()
@@ -30,6 +31,7 @@ def update_post(id, title=None, contents=None):
 
 def delete_post(id):
     post = get_post(id)
-    if post is None: return False
+    if post is None:
+        return False
     post.delete()
     return True
