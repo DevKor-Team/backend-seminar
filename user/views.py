@@ -7,7 +7,6 @@ from user.services import authenticate, login, logout, create_user
 from user.decorators import require_username_password
 
 class SignUpView(APIView):
-    authentication_classes = []
     permission_classes = []
 
     @require_username_password
@@ -23,8 +22,10 @@ class SignUpView(APIView):
 
 
 class LoginView(APIView):
-    authentication_classes = []
     permission_classes = []
+
+    def get(self, request):
+        return Response({"user": str(request.user), 'session': str(request.session.get('a'))})
 
     @require_username_password
     def post(self, request, username, password):
@@ -33,11 +34,10 @@ class LoginView(APIView):
             return Response({"success": False, "error": "match user not found."}, status=status.HTTP_404_NOT_FOUND)
         else:
             login(request, user)
-
-        return Response({"success": True})
+            request.session['a'] = str(user)
+            return Response({"user": str(request.user)})
 
 class LogoutView(APIView):
-    authentication_classes = []
     permission_classes = []
 
     def post(self, request):

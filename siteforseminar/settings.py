@@ -54,6 +54,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'siteforseminar.urls'
 
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -71,7 +72,9 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'siteforseminar.wsgi.application'
-
+AUTHENTICATION_BACKENDS = (
+  'django.contrib.auth.backends.ModelBackend',
+)
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
@@ -121,3 +124,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ]
+}

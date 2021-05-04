@@ -7,7 +7,6 @@ from posts.serializer import PostSerializer
 from posts.services import all_posts, get_post, create_post, update_post, delete_post
 
 class PostListCreateView(APIView):
-    authentication_classes = []
     permission_classes = []
 
     queryset = all_posts()
@@ -25,7 +24,6 @@ class PostListCreateView(APIView):
         return Response({"success": True})
 
 class PostDetailView(APIView):
-    authentication_classes = []
     permission_classes = []
 
     def get_object(self, pk):
