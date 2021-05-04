@@ -11,7 +11,6 @@ from posts.services import all_posts, get_post, create_post, update_post, delete
 class PostViewSet(GenericViewSet):
     filterset_class = PostFilter
     pagination_class = PostPagination
-    authentication_classes = []
     permission_classes = []
 
     serializer_class = PostSerializer
