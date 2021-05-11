@@ -6,8 +6,8 @@ from posts import views
 router = routers.DefaultRouter()
 router.register("", views.PostViewSet)
 
-# urlpatterns = [
-#     path('', include(router.urls)),
-# ]
+urlpatterns = [
+    path('', include(router.urls)),
+]
 
-urlpatterns = router.urls
+# urlpatterns = router.urls
